@@ -34,6 +34,8 @@ export type UserData = {
 	events: {
 		unique_opponents?: Snowflake[];
 	};
+
+	coins: number;
 };
 
 export type DuelData = {

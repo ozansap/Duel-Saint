@@ -9,6 +9,7 @@ const userData_default = {
 	wins: 0,
 	losses: 0,
 	elo: 1000,
+	coins: 0,
 };
 
 // ########## EXPORTS ##########
@@ -53,6 +54,7 @@ export class UserHandler {
 				career: "all",
 			},
 			events: {},
+			coins: 0,
 		};
 		this.stages = [];
 		this.userID = userID;
@@ -291,6 +293,40 @@ export class UserHandler {
 		this.stages.push({
 			$set: {
 				[`seasonal.${season}`]: data,
+			},
+		});
+		return this;
+	}
+
+	coins_add(amount: number) {
+		this.stages.push({
+			$set: {
+				coins: {
+					$add: ["$coins", amount]
+				},
+			},
+		});
+		return this;
+	}
+
+	coins_sub(amount: number) {
+		this.stages.push({
+			$set: {
+				coins: {
+					$max: [
+						0,
+						{ $subtract: ["$coins", amount] },
+					],
+				},
+			},
+		});
+		return this;
+	}
+
+	coins_set(amount: number): UserHandler {
+		this.stages.push({
+			$set: {
+				coins: amount,
 			},
 		});
 		return this;

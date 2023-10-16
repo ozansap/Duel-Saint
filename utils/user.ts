@@ -28,6 +28,10 @@ export class User {
 			description += `⚠️ Player banned from ranked play for **${duration((this.data.banned - now()) * 1000)}**`;
 		}
 
+		// if (this.data.coins >= 0){
+		// 	description += ` Coins: **${number(this.data.coins)}**\n\n`
+		// }
+
 		const reply = new Reply({
 			author: { name: info.tag },
 			thumbnail: info.avatarURL,

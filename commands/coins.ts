@@ -58,7 +58,7 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
                 Final Coins: ${finalCoins}
             `);
 
-            submit.update(reply.ephemeral());
+            submit.update(reply.removeComponents().ephemeral());
         } else if (submit && submit.isFromMessage()){
             const reply = Reply.error(`Whole numbers only, please.
                 ${user}'s Coins: ${userData.coins}

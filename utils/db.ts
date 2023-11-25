@@ -1,6 +1,6 @@
 import { Snowflake } from "discord.js";
 import { MONGO_URI, MONGO_DB_NAME } from "../config";
-import { DuelData, GeneralData, SeasonalProfile, UserData } from "./types";
+import { DuelData, GeneralData, PrizeData, SeasonalProfile, UserData } from "./types";
 import { Collection, MongoClient, ObjectId, OptionalId } from "mongodb";
 import { now, year } from "./time";
 import { seasons } from "./vars";
@@ -17,6 +17,7 @@ const userData_default = {
 export class DB {
 	static users: Collection<OptionalId<UserData>>;
 	static duels: Collection<DuelData>;
+	static prizes: Collection<PrizeData>;
 	static general: Collection<OptionalId<GeneralData>>;
 	static mongoClient = new MongoClient(MONGO_URI);
 
@@ -26,6 +27,7 @@ export class DB {
 
 		DB.users = database.collection("users");
 		DB.duels = database.collection("duels");
+		DB.prizes = database.collection("prizes");
 		DB.general = database.collection("general");
 	}
 }
@@ -363,6 +365,68 @@ export class DuelHandler {
 
 	async resolve(): Promise<void> {
 		DB.duels.findOneAndUpdate({ _id: new ObjectId(this.id!) }, { $unset: { dispute: "" } });
+	}
+}
+
+export class PrizeHandler {
+	data: PrizeData | null;
+	id: string | null;
+	stages: any[];
+
+	constructor(id: string) {
+		this.data = {
+			name: "PRIZE",
+			value: 0,
+			alert: false
+		};
+		this.id = id;
+		this.stages = [];
+	}
+
+	async create(data: PrizeData): Promise<string> {
+		const response = await DB.prizes.insertOne(data);
+		this.id = response.insertedId.toString();
+		return this.id;
+	}
+
+	async update(data: PrizeData) {
+		DB.prizes.findOneAndReplace({ _id: new ObjectId(this.id!) }, data);
+	}
+
+	async delete(data: PrizeData){
+		DB.prizes.deleteOne({ _id: new ObjectId(this.id!) })
+	}
+}
+
+export class PrizeList {
+	type: keyof PrizeData;
+	data: PrizeData[];
+	order: "asc" | "desc";
+
+	constructor() {
+		this.type = "value";
+		this.data = [];
+		this.order = "desc";
+	}
+
+		async fetch(type: keyof PrizeData = "value"): Promise<PrizeData[]> {
+			this.type = type;
+
+			const cursor = DB.prizes
+				.find()
+				.sort({ [this.type]: this.order === "desc" ? -1 : 1 })
+
+			let data: PrizeData[] = [];
+
+			for await (const PrizeData of cursor) {
+				if (PrizeData[this.type] === undefined) continue;
+				data.push(PrizeData);
+			}
+			
+			cursor.close();
+
+			this.data = data;
+			return this.data;
 	}
 }
 

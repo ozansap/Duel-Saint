@@ -51,6 +51,13 @@ export type DuelData = {
 	};
 };
 
+export type PrizeData = {
+	_id?: ObjectId;
+	name: string;
+	value: number;
+	alert: boolean;
+}
+
 export type GeneralData = {
 	_id?: "1";
 

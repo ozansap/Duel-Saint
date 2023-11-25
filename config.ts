@@ -1,7 +1,7 @@
 // @ts-nocheck
 import "dotenv/config";
 
-export const TEST: boolean = false;
+export const TEST: boolean = true;
 
 export const TOKEN: string = TEST ? process.env.TOKEN_TEST : process.env.TOKEN;
 export const MONGO_URI: string = TEST ? process.env.MONGO_URI_TEST : process.env.MONGO_URI;

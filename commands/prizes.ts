@@ -14,7 +14,7 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
     // chain?
 
 	const reply = new Reply( { title, description } )
-	interaction.reply(reply.visible());
+	interaction.reply(reply.ephemeral());
 };
 
 module.exports = {

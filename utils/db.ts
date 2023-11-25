@@ -315,7 +315,7 @@ export class UserHandler {
 				coins: {
 					$max: [
 						0,
-						{ $subtract: ["$coins", amount] },
+						{ $subtract: ["$coins", amount]},
 					],
 				},
 			},

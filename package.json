@@ -22,7 +22,8 @@
 		"mongodb": "^4.12.1",
 		"resemblejs": "^4.1.0",
 		"sharp": "^0.31.2",
-		"simple-base-converter": "^1.0.18"
+		"simple-base-converter": "^1.0.18",
+		"typescript": "^4.9.4"
 	},
 	"devDependencies": {
 		"@types/humanize-duration": "^3.27.1",

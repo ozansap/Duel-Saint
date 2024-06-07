@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { UserHandler } from "../utils/db";
+import { UserHandler, Shop, PrizeHandler } from "../utils/db";
 import { Reply } from "../utils/reply";
+import { PrizeData } from "../utils/types";
 
 const execute = async (interaction: ChatInputCommandInteraction) => {
     const user = interaction.user;
@@ -8,11 +9,11 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
 	const userHandler = new UserHandler(user.id);
 	const userData = await userHandler.fetch();
 
-    const title = `Prince Shop`
-    const description = `nothing yet KEKW\n\n` + `Coins: **${userData.coins}**`
-    // add button builder to redeem
-    // chain?
-
+	const shop = new Shop()
+	const prizeList = await shop.fetch()
+	
+    const title = `Prize Shop`
+	const description = prizeList.map(i => `${i.name}: ${i.value}`).join('\n') + `Coins: **${userData.coins}**`
 	const reply = new Reply( { title, description } )
 	interaction.reply(reply.ephemeral());
 };
@@ -20,6 +21,6 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
 module.exports = {
 	execute,
 	data: new SlashCommandBuilder()
-		.setName("prizes")
-		.setDescription("See the available list of prizes")
+		.setName("shop")
+		.setDescription("See the available list of prizes in the shop")
 };

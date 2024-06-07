@@ -1,5 +1,4 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, ChatInputCommandInteraction, ModalBuilder, SlashCommandBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
-import { MOD_ROLE_ID } from "../config";
 import { UserHandler } from "../utils/db";
 import { Reply } from "../utils/reply";
 
@@ -7,7 +6,6 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
     const user = interaction.options.getUser("player") ?? interaction.user;
     const userHandler = new UserHandler(user.id);
     const userData = await userHandler.fetch();
-    const modRole = interaction.guild?.roles.resolve(MOD_ROLE_ID);
 
 	const b_add = new ButtonBuilder().setLabel("Add").setStyle(ButtonStyle.Success).setCustomId("add");
 	const b_remove = new ButtonBuilder().setLabel("Remove").setStyle(ButtonStyle.Danger).setCustomId("remove");
@@ -73,6 +71,7 @@ module.exports = {
 	execute,
 	data: new SlashCommandBuilder()
 		.setName("coins")
-		.setDescription("View a user's coin amount")
+		.setDescription("View or edit a user's coin amount")
+        .setDefaultMemberPermissions(2)
         .addUserOption((o) => o.setName("player").setDescription("The player you want to view coins of").setRequired(false))
 };

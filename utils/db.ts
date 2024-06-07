@@ -373,7 +373,7 @@ export class PrizeHandler {
 	id: string | null;
 	stages: any[];
 
-	constructor(id: string) {
+	constructor(id: string | null = null) {
 		this.data = {
 			name: "PRIZE",
 			value: 0,
@@ -398,7 +398,7 @@ export class PrizeHandler {
 	}
 }
 
-export class PrizeList {
+export class Shop {
 	type: keyof PrizeData;
 	data: PrizeData[];
 	order: "asc" | "desc";
@@ -407,26 +407,26 @@ export class PrizeList {
 		this.type = "value";
 		this.data = [];
 		this.order = "desc";
-	}
+	};
 
-		async fetch(type: keyof PrizeData = "value"): Promise<PrizeData[]> {
-			this.type = type;
+	async fetch(type: keyof PrizeData = "value"): Promise<PrizeData[]> {
+		this.type = type;
 
-			const cursor = DB.prizes
-				.find()
-				.sort({ [this.type]: this.order === "desc" ? -1 : 1 })
+		const cursor = DB.prizes
+			.find()
+			.sort({ [this.type]: this.order === "desc" ? -1 : 1 })
 
-			let data: PrizeData[] = [];
+		let data: PrizeData[] = [];
 
-			for await (const PrizeData of cursor) {
-				if (PrizeData[this.type] === undefined) continue;
-				data.push(PrizeData);
-			}
-			
-			cursor.close();
+		for await (const PrizeData of cursor) {
+			if (PrizeData[this.type] === undefined) continue;
+			data.push(PrizeData);
+		}
+		
+		cursor.close();
 
-			this.data = data;
-			return this.data;
+		this.data = data;
+		return this.data;
 	}
 }
 
